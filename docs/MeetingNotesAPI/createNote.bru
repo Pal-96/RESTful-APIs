@@ -1,0 +1,22 @@
+meta {
+  name: createNote
+  type: http
+  seq: 5
+}
+
+post {
+  url: http://localhost:3001/meetingNotes/
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "title": "Sprint Review Meeting",
+    "content": "Conduct sprint review with customer",
+    "actionItems": [
+      "Detailed explanation",
+      "MOM"
+    ]
+  }
+}

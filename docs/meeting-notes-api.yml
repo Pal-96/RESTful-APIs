@@ -1,0 +1,320 @@
+openapi: 3.1.0
+info:
+  title: Meeting Notes API
+  summary: INFO6150 - CRUD operations for Meeting Notes
+  version: '1.0'
+servers:
+  - url: http://localhost:3001
+tags:
+  - name: MeetingNotes
+    description: Meeting Notes Endpoints
+paths:
+  /meetingnotes:
+    get:
+      tags:
+        - MeetingNotes
+      summary: Retrieve all the Meeting Notes
+      operationId: getMeetingNotes
+      responses:
+        '200':
+          description: Successfully retrieved all the meeting notes
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/MeetingNotes'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                badRequestExample:
+                  value:
+                    code: 500
+                    message: 'Internal Server Error'
+    post:
+      tags:
+        - MeetingNotes
+      summary: Create a new Meeting Note
+      operationId: createMeetingNote
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateMeetingNote'
+      responses:
+        '201':
+          description: Meeting Note created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MeetingNotes'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                badRequestExample:
+                  value:
+                    code: 400
+                    message: 'Invalid request data'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                internalServerErrorExample:
+                  value:
+                    code: 500
+                    message: 'Unexpected server error'
+  /meetingnotes/{keyword}:
+    get:
+      tags:
+        - MeetingNotes
+      operationId: getMeetingNotesByKeyword
+      description: To retrieve the Meeting Notes by keyword
+      parameters:
+        - name: keyword
+          in: path
+          description: keyword matching with the meeting note content
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: A list of all the meeting notes whose content matches with the keyword 
+          content:
+            'application/json':
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/MeetingNotes'
+        '401':
+          description: Authorization information is missing or invalid
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: No notes exist in the system
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/Error'
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /meetingnotes/{startDate}/{endDate}:
+    get:
+      tags:
+        - MeetingNotes
+      operationId: getMeetingNotesByDate
+      description: Retrieve the meeting notes that are created between the date range
+      parameters:
+        - name: startDate
+          in: path
+          description: Start Date of the range
+          required: true
+          schema:
+              type: string
+              format: date
+        - name: endDate
+          in: path
+          description: End Date of the range
+          required: true
+          schema:
+              type: string
+              format: date
+      responses:
+        '200':
+          description: A list of all the meeting notes whose content matches with the keyword 
+          content:
+            'application/json':
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/MeetingNotes'
+        '401':
+          description: Authorization information is missing or invalid
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: No notes exist in the system
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/Error'
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /meetingnotes/{id}:
+    put:
+      tags:
+        - MeetingNotes
+      description: Update a specific meeting note by ID
+      operationId: updateMeetingNoteByID
+      parameters:
+        - name: id
+          in: path
+          description: Id to fetch specific meeting note to update
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateMeetingNote'
+      responses:
+        '200':
+          description: Updated meeting note
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/MeetingNotes'
+        '401':
+          description: Authorization information is missing or invalid
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: No notes exist in the system
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/Error'
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    delete:
+      tags:
+        - MeetingNotes
+      description: Delete a specific meeting note by ID
+      operationId: deleteMeetingNoteById
+      parameters:
+        - name: id
+          in: path
+          description: Id to fetch specific meeting note to delete
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: Meeting Note deleted successfully
+        '404':
+          description: Meeting Note not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        default:
+          description: Unexpected error
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/Error'
+components:
+  schemas:
+    MeetingNotes:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: ID of the note
+          examples:
+            - 1
+        title:
+          type: string
+          description: Title of the note
+          examples:
+            - "Sprint Planning"
+        content:
+          type: string
+          description: Content of the note
+          examples:
+            - "The team discussed and prioritized user stories for the upcoming sprint"
+        actionItems:
+          type: array
+          description: Action items of the meeting
+          examples:
+            - "Connect with the Policy Team"
+            - "Conduct regular stand up meetings"
+        creationDate:
+          type: string
+          format: date-time
+          description: Creation date of the note
+          examples:
+            - "2024-03-15T10:00:00Z"
+    CreateMeetingNote:
+      type: object
+      properties:
+        title:
+          type: string
+          description: Title of the note
+          examples:
+            - "Sprint Planning"
+        content:
+          type: string
+          description: Content of the note
+          examples:
+            - "The team discussed and prioritized user stories for the upcoming sprint"
+        actionItems:
+          type: array
+          description: Action items of the meeting
+          examples:
+            - "Connect with the Policy Team"
+            - "Conduct regular stand up meetings"
+      required:
+        - title
+        - content
+    UpdateMeetingNote:
+      type: object
+      properties:
+        title:
+          type: string
+          description: Title of the note
+          examples:
+            - "Sprint Planning"
+        content:
+          type: string
+          description: Content of the note
+          examples:
+            - "The team discussed and prioritized user stories for the upcoming sprint"
+        actionItems:
+          type: array
+          description: Action items of the meeting
+          examples:
+            - "Connect with the Policy Team"
+            - "Conduct regular stand up meetings"
+    Error:
+      type: object
+      properties:
+        code:
+          type: integer
+          examples: 
+            - '200'
+        message:
+          type: string
+          examples: 
+            - 'Error message example'

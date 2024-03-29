@@ -1,0 +1,22 @@
+meta {
+  name: deleteNote
+  type: http
+  seq: 6
+}
+
+delete {
+  url: http://localhost:3001/meetingNotes/6
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "title": "Sprint Review Meeting",
+    "content": "Conduct sprint review with customer",
+    "actionItems": [
+      "Detailed explanation",
+      "MOM"
+    ]
+  }
+}
