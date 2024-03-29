@@ -1,8 +1,6 @@
-# RESTful_APIs
+# This repository is an extension to meeting notes application by creating RESTful APIs for CRUD operations
 
-## This repository is an extension to meeting notes application by creating RESTful APIs for CRUD operations
-
-## Tech stack
+## Tech stack:
 
 - Node.js
 - Express.js
